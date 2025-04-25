@@ -1,16 +1,30 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const mongoose = require('mongoose');
+const User = require('/models/User');
 
 const app = express();
+app.use(express.json()); // Biar bisa parsing JSON
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("API Sepeda aktif!");
+// Koneksi MongoDB
+mongoose.connect('mongodb://localhost:27017/db_sepeda', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log("✅ Terkoneksi ke MongoDB");
+}).catch(err => {
+  console.error("❌ Gagal konek MongoDB:", err);
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server berjalan di http://localhost:${PORT}`);
+// Tes endpoint buat create user
+app.post('/users', async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.listen(5000, () => {
+  console.log('Server berjalan di http://localhost:5000');
 });
