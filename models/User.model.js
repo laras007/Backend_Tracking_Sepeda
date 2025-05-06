@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   height: Number,
   weight: Number,
-  sos_contact: Number
-}, { timestamps: true });
+  sos_contact: Number,
+  timestamp: { type: Date, default: Date.now } });
 
 module.exports = mongoose.model("User", userSchema);
